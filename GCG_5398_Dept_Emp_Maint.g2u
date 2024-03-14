@@ -1,0 +1,388 @@
+Program.Sub.ScreenSU.Start
+Gui.DeptEmpMaint..Create
+Gui.DeptEmpMaint..Caption("Department/Employee Maintenance")
+Gui.DeptEmpMaint..Size(7920,9045)
+Gui.DeptEmpMaint..MinX(0)
+Gui.DeptEmpMaint..MinY(0)
+Gui.DeptEmpMaint..Position(0,0)
+Gui.DeptEmpMaint..BackColor(-2147483633)
+Gui.DeptEmpMaint..MousePointer(0)
+Gui.DeptEmpMaint..Event(UnLoad,DeptEmpMaint_UnLoad)
+Gui.DeptEmpMaint.txtDept.Create(TextBox,"",True,2070,300,0,105,330,True,0,"Arial",8,-2147483643,1)
+Gui.DeptEmpMaint.txtDept.Event(GotFocus,txtDept_GotFocus)
+Gui.DeptEmpMaint.txtDept.Event(LostFocus,txtDept_LostFocus)
+Gui.DeptEmpMaint.lblDept.Create(Label,"Department",True,1935,225,0,105,150,True,0,"Arial",8,-2147483633,0)
+Gui.DeptEmpMaint.cmdDept.Create(Button)
+Gui.DeptEmpMaint.cmdDept.Size(465,375)
+Gui.DeptEmpMaint.cmdDept.Position(2280,300)
+Gui.DeptEmpMaint.cmdDept.Caption("^")
+Gui.DeptEmpMaint.cmdDept.Event(Click,cmdDept_Click)
+Gui.DeptEmpMaint.GsGridControl1.Create(GsGridControl)
+Gui.DeptEmpMaint.GsGridControl1.Size(7590,7230)
+Gui.DeptEmpMaint.GsGridControl1.Position(105,1260)
+Gui.DeptEmpMaint.GsGridControl1.Event(RowCellClick,GsGridControl1_RowCellClick)
+Gui.DeptEmpMaint.txtEmp.Create(TextBox,"",True,1395,300,0,105,900,True,0,"Arial",8,-2147483643,1)
+Gui.DeptEmpMaint.txtEmp.Event(GotFocus,txtEmp_GotFocus)
+Gui.DeptEmpMaint.txtEmp.Event(LostFocus,txtEmp_LostFocus)
+Gui.DeptEmpMaint.cmdEmp.Create(Button)
+Gui.DeptEmpMaint.cmdEmp.Size(465,375)
+Gui.DeptEmpMaint.cmdEmp.Position(4005,870)
+Gui.DeptEmpMaint.cmdEmp.Caption("^")
+Gui.DeptEmpMaint.cmdEmp.Event(Click,cmdEmp_Click)
+Gui.DeptEmpMaint.cmdAddEmp.Create(Button)
+Gui.DeptEmpMaint.cmdAddEmp.Size(855,375)
+Gui.DeptEmpMaint.cmdAddEmp.Position(4515,870)
+Gui.DeptEmpMaint.cmdAddEmp.Caption("Add")
+Gui.DeptEmpMaint.cmdAddEmp.Event(Click,cmdAddEmp_Click)
+Gui.DeptEmpMaint.lblEmp.Create(Label,"Employee #",True,1380,225,0,105,720,True,0,"Arial",8,-2147483633,0)
+Gui.DeptEmpMaint.txtName.Create(TextBox,"",True,2400,300,0,1545,900,True,0,"Arial",8,-2147483643,1)
+Gui.DeptEmpMaint.txtName.Locked(True)
+Gui.DeptEmpMaint.lblName.Create(Label,"Name",True,645,225,0,1545,720,True,0,"Arial",8,-2147483633,0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Global.sDeptName.Declare(String,"")
+
+Gui.DeptEmpMaint.txtDept.Mask(">")
+Gui.DeptEmpMaint.txtEmp.Mask(">")
+
+'build empty datatable to merge records into
+F.Intrinsic.Control.CallSub(Build_Empty_DT)
+'attaching empty dt to grid and setting properites
+F.Intrinsic.Control.CallSub(Set_Properties)
+
+Gui.DeptEmpMaint..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+Program.Sub.DeptEmpMaint_UnLoad.Start
+F.Intrinsic.Control.SetErrorHandler("DeptEmpMaint_UnLoad_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("DeptEmpMaint_UnLoad_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+Program.Sub.DeptEmpMaint_UnLoad.End
+
+Program.Sub.txtDept_LostFocus.Start
+F.Intrinsic.Control.SetErrorHandler("txtDept_LostFocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sSql.Declare(String,"")
+
+F.Intrinsic.Control.If(V.Screen.DeptEmpMaint!txtDept.Text,<>,"")
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.Intrinsic.String.Build("Select Dept_ID, Dept_Name From Departments Where Dept_ID = '{0}'",V.Screen.DeptEmpMaint!txtDept.Text,V.Local.sSql)
+	F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sSql)
+	F.Intrinsic.Control.If(V.Local.sSql,<>,"")
+		F.Intrinsic.String.Split(V.Local.sSql,"*!*",V.Local.sSql)
+		V.Local.sSql.RedimPreserve(0,1)
+		V.Global.sDeptName.Set(V.Local.sSql(1).Trim)
+		F.Intrinsic.String.Build("Select Dept_Id, Dept_Name, Employee, Name From GCG_5398_Dept_Maint Where Dept_Id = '{0}'",V.Screen.DeptEmpMaint!txtDept.Text,V.Local.sSql)
+		F.Data.DataTable.CreateFromSQL("Temp","con",V.Local.sSql)
+		F.Data.DataTable.DeleteRow("Dept")
+		F.Data.DataTable.AcceptChanges("Dept")
+		F.Data.DataTable.Merge("Temp","Dept",False,4)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.UI.Msgbox("Not a Valid Department.........","Atttention")
+	F.Intrinsic.Control.EndIf
+	
+	F.ODBC.Connection!Con.Close
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtDept_LostFocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.txtDept_LostFocus.End
+
+Program.Sub.txtDept_GotFocus.Start
+F.Intrinsic.Control.SetErrorHandler("txtDept_GotFocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+Gui.DeptEmpMaint.txtDept.SelectAll
+	
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtDept_GotFocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.txtDept_GotFocus.End
+
+Program.Sub.txtEmp_LostFocus.Start
+F.Intrinsic.Control.SetErrorHandler("txtEmp_LostFocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sSql.Declare(String,"")
+
+F.Intrinsic.String.Build("Select Employee, Name From Employee_Mstr Where Employee = '{0}'",V.Screen.DeptEmpMaint!txtEmp.Text,V.Local.sSql)
+
+F.ODBC.Connection!Con.OpenCompanyConnection
+F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sSql)
+F.ODBC.Connection!Con.Close
+
+F.Intrinsic.Control.If(V.Local.sSql.Trim,<>,"")
+	F.Intrinsic.String.Split(V.Local.sSql,"*!*",V.Local.sSql)
+	V.Local.sSql.RedimPreserve(0,1)
+	Gui.DeptEmpMaint.txtName.Text(V.Local.sSql(1).Trim)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Control.If(V.Screen.DeptEmpMaint!txtEmp.Text,<>,"")
+		F.Intrinsic.UI.Msgbox("Entered Employee Number is not valid........","Atttention")
+		F.Intrinsic.Control.BlockEvents
+		Gui.DeptEmpMaint.txtEmp.SetFocus
+		Gui.DeptEmpMaint.txtEmp.SelectAll
+		Gui.DeptEmpMaint.txtName.Text("")
+		F.Intrinsic.Control.UnBlockEvents
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtEmp_LostFocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.txtEmp_LostFocus.End
+
+Program.Sub.txtEmp_GotFocus.Start
+F.Intrinsic.Control.SetErrorHandler("txtEmp_GotFocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+Gui.DeptEmpMaint.txtEmp.SelectAll
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtEmp_GotFocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.txtEmp_GotFocus.End
+
+Program.Sub.cmdDept_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdDept_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sTitles.Declare(String,"")
+V.Local.sRet.Declare(String,"")
+V.Local.iWidths.Declare(Long,0)
+V.Local.sSql.Declare(String,"")
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(70,"",V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	Gui.DeptEmpMaint.txtDept.Text(V.Local.sRet(0).Trim)
+	V.Global.sDeptName.Set(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.CallSub(txtDept_LostFocus)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdDept_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdDept_Click.End
+
+Program.Sub.cmdEmp_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdEmp_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sTitles.Declare(String,"")
+V.Local.sRet.Declare(String,"")
+V.Local.iWidths.Declare(Long,0)
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(50,"",V.Local.sRet)
+
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	F.Intrinsic.Control.BlockEvents
+	Gui.DeptEmpMaint.txtEmp.Text(V.Local.sRet(0).Trim)
+	Gui.DeptEmpMaint.txtName.Text(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.UnBlockEvents
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdEmp_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdEmp_Click.End
+
+Program.Sub.GsGridControl1_RowCellClick.Start
+F.Intrinsic.Control.SetErrorHandler("GsGridControl1_RowCellClick_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+F.Intrinsic.Control.If(V.Args.Column.UCase,=,"DELETE_DEPT")
+	F.Data.DataTable.DeleteRow("Dept",V.Args.RowIndex)
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.Data.DataTable.SaveToDB("Dept","con","GCG_5398_Dept_Maint","Dept_ID*!*Employee",7,"Dept_ID@!@Dept_ID*!*Dept_Name@!@Dept_Name*!*Employee@!@Employee*!*Name@!@Name")
+	F.ODBC.Connection!Con.Close
+	F.Data.DataTable.AcceptChanges("Dept")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GsGridControl1_RowCellClick_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.GsGridControl1_RowCellClick.End
+
+Program.Sub.cmdAddEmp_Click.Start
+F.Intrinsic.Control.SetErrorHandler("GsGridControl1_RowCellClick_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sDept.Declare(String,"")
+V.Local.sEmp.Declare(String,"")
+V.Local.sName.Declare(String,"")
+V.Local.sFilter.Declare(String,"")
+
+V.Local.sDept.Set(V.Screen.DeptEmpMaint!txtDept.Text)
+V.Local.sEmp.Set(V.Screen.DeptEmpMaint!txtEmp.Text)
+V.Local.sName.Set(V.Screen.DeptEmpMaint!txtName.Text)
+
+F.Intrinsic.Control.If(V.Local.sDept.Trim,<>,"","AND",V.Local.sEmp.Trim,<>,"")
+	F.Intrinsic.String.Build("Dept_ID = '{0}' and Employee = '{1}'",V.Local.sDept.Trim,V.Local.sEmp.Trim,V.Local.sFilter)
+	F.Data.DataView.Create("Dept","VTemp",22,V.Local.sFilter,"")
+	F.Intrinsic.Control.If(V.DataView.Dept!VTemp.RowCount--,=,-1)
+		F.Data.DataTable.AddRow("Dept","Dept_ID",V.Local.sDept,"Dept_Name",V.Global.sDeptName.Trim,"Employee",V.Local.sEmp.Trim,"Name",V.Local.sName.Trim)
+	
+		F.ODBC.Connection!Con.OpenCompanyConnection
+		F.Data.DataTable.SaveToDB("Dept","con","GCG_5398_Dept_Maint","Dept_ID*!*Employee",7,"Dept_ID@!@Dept_ID*!*Dept_Name@!@Dept_Name*!*Employee@!@Employee*!*Name@!@Name")
+		F.ODBC.Connection!Con.Close
+		F.Data.DataTable.AcceptChanges("Dept")
+	F.Intrinsic.Control.EndIf
+	F.Data.DataView.Close("Dept","VTemp")
+F.Intrinsic.Control.Else
+	F.Intrinsic.UI.Msgbox("A Department and Employee must be selected............","Atttention")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GsGridControl1_RowCellClick_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.cmdAddEmp_Click.End
+
+Program.Sub.Build_Empty_DT.Start
+F.Intrinsic.Control.SetErrorHandler("Build_Empty_DT_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+V.Local.sSql.Declare(String,"")
+
+
+V.Local.sSql.Set("Select Dept_ID, Dept_Name, Employee, Name, '' as Delete_Dept From GCG_5398_Dept_Maint Where Dept_ID = '-1'")
+
+F.ODBC.Connection!Con.OpenCompanyConnection
+
+F.Data.DataTable.CreateFromSQL("Dept","con",V.Local.sSql,True)
+
+F.ODBC.Connection!Con.Close
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Build_Empty_DT_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Build_Empty_DT.End
+
+Program.Sub.Set_Properties.Start
+F.Intrinsic.Control.SetErrorHandler("Set_Properties_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String,"")
+
+Gui.DeptEmpMaint.GsGridControl1.AddGridviewFromDatatable("GDept","Dept")
+
+Gui.DeptEmpMaint.GsGridControl1.SetGridviewProperty("GDept","Editable",False)
+Gui.DeptEmpMaint.GsGridControl1.SetGridviewProperty("GDept","ReadOnly",True)
+
+Gui.DeptEmpMaint.GsGridControl1.ColumnEdit("GDept","Delete_Dept","EditorButton","Delete")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Delete_Dept","Caption"," ")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Delete_Dept","HeaderBackColor","Green")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Delete_Dept","HeaderForeColor","White")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Delete_Dept","Fixed","Right")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_ID","HeaderBackColor","Green")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_ID","HeaderForeColor","White")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_ID","Caption","DEPARTMENT")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_Name","HeaderBackColor","Green")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_Name","HeaderForeColor","White")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Dept_Name","Caption","DEPARTMENT NAME")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Employee","HeaderBackColor","Green")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Employee","HeaderForeColor","White")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Name","HeaderBackColor","Green")
+Gui.DeptEmpMaint.GsGridControl1.SetColumnProperty("GDept","Name","HeaderForeColor","White")
+
+Gui.DeptEmpMaint.GsGridControl1.MainView("GDept")
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Set_Properties_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	F.Intrinsic.String.Build("Project: GCG_5398_Dept_Emp_Maint.g2u{0}{0}Subroutine: {1}{0}Error Occurred {2} with description {3}",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(DeptEmpMaint_UnLoad)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Set_Properties.End
