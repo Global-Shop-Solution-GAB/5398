@@ -1,0 +1,330 @@
+Program.Sub.ScreenSU.Start
+Gui.FormProjectType..Create
+Gui.FormProjectType..Caption("CAPA/ECR Project Type")
+Gui.FormProjectType..Size(7500,10860)
+Gui.FormProjectType..MinX(0)
+Gui.FormProjectType..MinY(0)
+Gui.FormProjectType..Position(0,0)
+Gui.FormProjectType..BackColor(-2147483633)
+Gui.FormProjectType..MousePointer(0)
+Gui.FormProjectType..Event(UnLoad,FormProjectType_UnLoad)
+Gui.FormProjectType.tab1.Create(Tab)
+Gui.FormProjectType.tab1.Size(7110,10215)
+Gui.FormProjectType.tab1.Position(105,165)
+Gui.FormProjectType.tab1.Tabs(2)
+Gui.FormProjectType.tab1.SetTab(0)
+Gui.FormProjectType.tab1.Caption("Project Type")
+Gui.FormProjectType.tab1.SetTab(1)
+Gui.FormProjectType.tab1.Caption("Source")
+Gui.FormProjectType.txtProjectType.Create(TextBox,"",True,3450,300,0,105,420,True,0,"Arial",8,-2147483643,1)
+Gui.FormProjectType.txtProjectType.MaxLength(50)
+Gui.FormProjectType.txtProjectType.Event(GotFocus,txtProjectType_GotFocus)
+Gui.FormProjectType.txtProjectType.Parent("tab1",0)
+Gui.FormProjectType.cmdAdd.Create(Button)
+Gui.FormProjectType.cmdAdd.Size(855,375)
+Gui.FormProjectType.cmdAdd.Position(3630,390)
+Gui.FormProjectType.cmdAdd.Caption("Add")
+Gui.FormProjectType.cmdAdd.Event(Click,cmdAdd_Click)
+Gui.FormProjectType.cmdAdd.Parent("tab1",0)
+Gui.FormProjectType.GsGridControlProjectType.Create(GsGridControl)
+Gui.FormProjectType.GsGridControlProjectType.Size(6885,8955)
+Gui.FormProjectType.GsGridControlProjectType.Position(105,825)
+Gui.FormProjectType.GsGridControlProjectType.Event(RowCellClick,GsGridControlProjectType_RowCellClick)
+Gui.FormProjectType.GsGridControlProjectType.Parent("tab1",0)
+Gui.FormProjectType.txtSource.Create(TextBox,"",True,3450,300,0,105,420,True,0,"Arial",8,-2147483643,1)
+Gui.FormProjectType.txtSource.MaxLength(50)
+Gui.FormProjectType.txtSource.Event(GotFocus,txtProjectType_GotFocus)
+Gui.FormProjectType.txtSource.Parent("tab1",1)
+Gui.FormProjectType.cmdAddSource.Create(Button)
+Gui.FormProjectType.cmdAddSource.Size(855,375)
+Gui.FormProjectType.cmdAddSource.Position(3630,390)
+Gui.FormProjectType.cmdAddSource.Caption("Add")
+Gui.FormProjectType.cmdAddSource.Event(Click,cmdAddSource_Click)
+Gui.FormProjectType.cmdAddSource.Parent("tab1",1)
+Gui.FormProjectType.GsGridControlSource.Create(GsGridControl)
+Gui.FormProjectType.GsGridControlSource.Size(6885,8955)
+Gui.FormProjectType.GsGridControlSource.Position(105,825)
+Gui.FormProjectType.GsGridControlSource.Event(RowCellClick,GsGridControlSource_RowCellClick)
+Gui.FormProjectType.GsGridControlSource.Parent("tab1",1)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	F.Intrinsic.Control.CallSub(Get_Data)
+	F.Intrinsic.Control.CallSub(Set_Properties)
+	
+	Gui.FormProjectType.tab1.SetTab(0)
+	
+	Gui.FormProjectType..Show
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormProjectType_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.txtProjectType_GotFocus.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	Gui.FormProjectType.txtProjectType.SelectAll
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormProjectType_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.txtProjectType_GotFocus.End
+
+Program.Sub.FormProjectType_UnLoad.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	F.Intrinsic.Control.End
+
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormProjectType_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.FormProjectType_UnLoad.End
+
+Program.Sub.cmdAdd_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.iIdentity.Declare(Long,0)
+	V.Local.sProject.Declare(String,"")
+	
+	V.Local.sProject.Set(V.Screen.FormProjectType!txtProjectType.Text)
+
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	F.ODBC.Connection!Con.GetID("GCG_5398_Proj_Type","Proj_No",True,V.Local.iIdentity)
+
+	F.Data.DataTable.AddRow("Project","Proj_No",V.Local.iIdentity,"Project_Type",V.Local.sProject.Trim)
+	
+	F.Data.DataTable.SaveToDB("Project","con","GCG_5398_Proj_Type","Proj_No",3,"Proj_No@!@Proj_No*!*Project_Type@!@Project_Type")
+	
+	F.Data.DataTable.AcceptChanges("Project")
+	
+	Gui.FormProjectType.txtProjectType.Text("")
+	Gui.FormProjectType.txtProjectType.SetFocus
+	Gui.FormProjectType.txtProjectType.SelectAll
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormProjectType_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.cmdAdd_Click.End
+
+Program.Sub.cmdAddSource_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.iIdentity.Declare(Long,0)
+	V.Local.sSource.Declare(String,"")
+	
+	V.Local.sSource.Set(V.Screen.FormProjectType!txtSource.Text)
+
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	F.ODBC.Connection!Con.GetID("GCG_5398_Source","Source_No",True,V.Local.iIdentity)
+
+	F.Data.DataTable.AddRow("Source","Source_No",V.Local.iIdentity,"Source",V.Local.sSource.Trim)
+	
+	F.Data.DataTable.SaveToDB("Source","con","GCG_5398_Source","Source_No",3,"Source_No@!@Source_No*!*Source@!@Source")
+	
+	F.Data.DataTable.AcceptChanges("Source")
+	
+	Gui.FormProjectType.txtSource.Text("")
+	Gui.FormProjectType.txtSource.SetFocus
+	Gui.FormProjectType.txtSource.SelectAll
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormProjectType_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.cmdAddSource_Click.End
+
+Program.Sub.Set_Properties.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	Gui.FormProjectType.GsGridControlProjectType.AddGridviewFromDatatable("Project","Project")
+
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","Visible",False)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","Caption","Issue No")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Proj_No","HeaderForeColor","White")
+	
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Project_Type","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Project_Type","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Project_Type","Caption","Project Type")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Project_Type","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Project_Type","HeaderForeColor","White")
+	
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","Caption"," ")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","HeaderForeColor","White")
+	Gui.FormProjectType.GsGridControlProjectType.SetColumnProperty("Project","Delete_Button","MaxWidth","50")
+	Gui.FormProjectType.GsGridControlProjectType.ColumnEdit("Project","Delete_Button","EditorButton","Delete")
+	
+	Gui.FormProjectType.GsGridControlProjectType.MainView("Project")
+	
+	Gui.FormProjectType.GsGridControlSource.AddGridviewFromDatatable("Source","Source")
+
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","Visible",False)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","Caption","Issue No")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source_No","HeaderForeColor","White")
+	
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source","Caption","Source")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Source","HeaderForeColor","White")
+	
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","ReadOnly",True)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","AllowEdit",False)
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","Caption"," ")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","HeaderBackColor","Green")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","HeaderForeColor","White")
+	Gui.FormProjectType.GsGridControlSource.SetColumnProperty("Source","Delete_Button","MaxWidth","50")
+	Gui.FormProjectType.GsGridControlSource.ColumnEdit("Source","Delete_Button","EditorButton","Delete")
+	
+	Gui.FormProjectType.GsGridControlSource.MainView("Source")
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormComIss_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Set_Properties.End
+
+Program.Sub.Get_Data.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSql.Declare(String,"")
+	
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	V.Local.sSql.Set("Select Proj_No, Project_Type,' ' as Delete_Button From GCG_5398_Proj_Type Order By Proj_No")
+	
+	F.Data.DataTable.CreateFromSQL("Project","con",V.Local.sSql,True)
+
+	V.Local.sSql.Set("Select Source_No, Source,' ' as Delete_Button From GCG_5398_Source Order By Source_No")
+	
+	F.Data.DataTable.CreateFromSQL("Source","con",V.Local.sSql,True)
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormComIss_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Get_Data.End
+
+Program.Sub.GsGridControlProjectType_RowCellClick.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSql.Declare(String,"")
+	
+	F.Intrinsic.Control.If(V.Args.Column.UCase,=,"DELETE_BUTTON")
+		F.ODBC.Connection!Con.OpenCompanyConnection
+		F.Data.DataTable.DeleteRow("Project",V.Args.RowIndex)
+		
+		F.Data.DataTable.SaveToDB("Project","con","GCG_5398_Proj_Type","Proj_No",4,"Proj_No@!@Proj_No*!*Project_Type@!@Project_Type")
+	
+		F.Data.DataTable.AcceptChanges("Project")
+		F.ODBC.Connection!Con.Close
+		
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormComIss_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.GsGridControlProjectType_RowCellClick.End
+
+Program.Sub.GsGridControlSource_RowCellClick.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSql.Declare(String,"")
+	
+	F.Intrinsic.Control.If(V.Args.Column.UCase,=,"DELETE_BUTTON")
+		F.ODBC.Connection!Con.OpenCompanyConnection
+		F.Data.DataTable.DeleteRow("Source",V.Args.RowIndex)
+		
+		F.Data.DataTable.SaveToDB("Source","con","GCG_5398_Source","Source_No",4,"Source_No@!@Source_No*!*Source@!@Source")
+	
+		F.Data.DataTable.AcceptChanges("Source")
+		F.ODBC.Connection!Con.Close
+		
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_Project_Type.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(FormComIss_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.GsGridControlSource_RowCellClick.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
