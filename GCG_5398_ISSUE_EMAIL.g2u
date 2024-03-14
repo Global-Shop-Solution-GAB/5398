@@ -1,0 +1,606 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.CAR/ECRIssEmails..Create(BaseForm)
+Gui.CAR/ECRIssEmails..Caption("CAPA/ECR Process Emails Maintenance")
+Gui.CAR/ECRIssEmails..Size(10725,10695)
+Gui.CAR/ECRIssEmails..MinX(0)
+Gui.CAR/ECRIssEmails..MinY(0)
+Gui.CAR/ECRIssEmails..Position(0,0)
+Gui.CAR/ECRIssEmails..BackColor(-2147483633)
+Gui.CAR/ECRIssEmails..MousePointer(0)
+Gui.CAR/ECRIssEmails..Event(UnLoad,CAR/ECRIssEmails_UnLoad)
+Gui.CAR/ECRIssEmails..AlwaysOnTop(False)
+Gui.CAR/ECRIssEmails..FontName("Tahoma")
+Gui.CAR/ECRIssEmails..FontSize(8.25)
+Gui.CAR/ECRIssEmails..ControlBox(True)
+Gui.CAR/ECRIssEmails..MaxButton(True)
+Gui.CAR/ECRIssEmails..MinButton(True)
+Gui.CAR/ECRIssEmails..Moveable(True)
+Gui.CAR/ECRIssEmails..Sizeable(True)
+Gui.CAR/ECRIssEmails..ShowInTaskBar(True)
+Gui.CAR/ECRIssEmails..TitleBar(True)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Create(GsGridControl)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Size(10425,9750)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Position(105,105)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Event(CellValueChanged,GsGridControlIssEmails_CellValueChanged)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Enabled(True)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Visible(True)
+Gui.CAR/ECRIssEmails.GsGridControlIssEmails.Zorder(0)
+Gui.CAR/ECRIssEmails.cmdSave.Create(Button)
+Gui.CAR/ECRIssEmails.cmdSave.Size(855,375)
+Gui.CAR/ECRIssEmails.cmdSave.Position(105,9930)
+Gui.CAR/ECRIssEmails.cmdSave.Caption("Save")
+Gui.CAR/ECRIssEmails.cmdSave.Event(Click,cmdSave_Click)
+Gui.CAR/ECRIssEmails.cmdSave.Enabled(True)
+Gui.CAR/ECRIssEmails.cmdSave.Visible(True)
+Gui.CAR/ECRIssEmails.cmdSave.Zorder(0)
+Gui.CAR/ECRIssEmails.cmdSave.FontName("Tahoma")
+Gui.CAR/ECRIssEmails.cmdSave.FontSize(8.25)
+Gui.FormEmail..Create(BaseForm)
+Gui.FormEmail..Size(6555,7470)
+Gui.FormEmail..MinX(0)
+Gui.FormEmail..MinY(0)
+Gui.FormEmail..Position(0,0)
+Gui.FormEmail..BackColor(-2147483633)
+Gui.FormEmail..MousePointer(0)
+Gui.FormEmail..Caption("Email Notification Content")
+Gui.FormEmail..Event(UnLoad,FormEmail_UnLoad)
+Gui.FormEmail..AlwaysOnTop(False)
+Gui.FormEmail..FontName("Tahoma")
+Gui.FormEmail..FontSize(8.25)
+Gui.FormEmail..ControlBox(True)
+Gui.FormEmail..MaxButton(True)
+Gui.FormEmail..MinButton(True)
+Gui.FormEmail..Moveable(True)
+Gui.FormEmail..Sizeable(True)
+Gui.FormEmail..ShowInTaskBar(True)
+Gui.FormEmail..TitleBar(True)
+Gui.FormEmail.txtSubject.Create(TextBox,"",True,6165,300,0,105,450,True,0,"Arial",8,-2147483643,1)
+Gui.FormEmail.txtSubject.MaxLength(20)
+Gui.FormEmail.lblSubject.Create(Label,"Subject",True,540,210,0,105,225,True,0,"Arial",8,-2147483633,0,0)
+Gui.FormEmail.lblSubject.BorderStyle(0)
+Gui.FormEmail.cmdUpdateEmail.Create(Button)
+Gui.FormEmail.cmdUpdateEmail.Size(1935,375)
+Gui.FormEmail.cmdUpdateEmail.Position(105,6705)
+Gui.FormEmail.cmdUpdateEmail.Caption("Update Email Content")
+Gui.FormEmail.cmdUpdateEmail.Event(Click,cmdUpdateEmail_Click)
+Gui.FormEmail.cmdUpdateEmail.Enabled(True)
+Gui.FormEmail.cmdUpdateEmail.Visible(True)
+Gui.FormEmail.cmdUpdateEmail.Zorder(0)
+Gui.FormEmail.cmdUpdateEmail.FontName("Tahoma")
+Gui.FormEmail.cmdUpdateEmail.FontSize(8.25)
+Gui.FormEmail.lblBody.Create(Label,"Body",True,375,210,0,105,1170,True,0,"Arial",8,-2147483633,0,0)
+Gui.FormEmail.lblBody.BorderStyle(0)
+Gui.FormEmail.txtBody.Create(TextBoxR)
+Gui.FormEmail.txtBody.Enabled(True)
+Gui.FormEmail.txtBody.Visible(True)
+Gui.FormEmail.txtBody.Zorder(0)
+Gui.FormEmail.txtBody.Size(6165,5205)
+Gui.FormEmail.txtBody.Position(105,1425)
+Gui.FormEmail.txtBody.FontName("Tahoma")
+Gui.FormEmail.txtBody.FontSize(8.25)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sSubject.Declare(String,"")
+V.Global.sBody.Declare(String,"")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	F.Intrinsic.Control.If(V.Caller.Switches,=,"S")
+		F.Intrinsic.Control.CallSub(Send_ISS_EMAIL)
+		F.Intrinsic.Control.CallSub(CAR/ECRIssEmails_UnLoad)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.Control.If(V.Ambient.IsInTaskScheduler)
+			'send email to process email statting the capa or ecr is past due.
+			F.Intrinsic.Control.CallSub(Send_Past_Due_Email)
+			
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.CallSub(Get_Data)
+			F.Intrinsic.Control.CallSub(Set_Properties)
+	
+			Gui.CAR/ECRIssEmails.cmdSave.Enabled(False)
+	
+			Gui.CAR/ECRIssEmails..Show
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(CAR/ECRIssEmails_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.Get_Data.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSql.Declare(String,"")
+	
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	F.Data.DataTable.CreateFromSQL("Issue","Con","Select Issue_No, COMMON_ISSUE, rtrim(ISS_EMAIL) as ISS_EMAIL, Sender_Email From GCG_5398_CCA_COM_ISS Order By Issue_No",True)
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(CAR/ECRIssEmails_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Get_Data.End
+
+Program.Sub.Set_Properties.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.AddGridviewFromDatatable("Issue","Issue")
+	
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","Caption","Issue No.")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","ReadOnly",True)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","AllowEdit",False)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","Visible",False)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","HeaderBackColor","Green")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Issue_No","HeaderForeColor","White")
+
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","Caption","Process")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","ReadOnly",True)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","AllowEdit",False)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","HeaderBackColor","Green")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","HeaderForeColor","White")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","COMMON_ISSUE","MaxLength",100)
+	
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","Caption","Process Email")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","ReadOnly",False)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","AllowEdit",True)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","HeaderBackColor","Green")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","HeaderForeColor","White")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","ISS_EMAIL","MaxLength",100)
+	
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","Caption","Sender Email")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","ReadOnly",False)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","AllowEdit",True)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","HeaderBackColor","Green")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","HeaderForeColor","White")
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","MaxLength",50)
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.SetColumnProperty("Issue","Sender_Email","MaxWidth","180")
+	
+	Gui.CAR/ECRIssEmails.GsGridControlIssEmails.MainView("Issue")
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.CallSub(CAR/ECRIssEmails_UnLoad)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Set_Properties.End
+
+Program.Sub.CAR/ECRIssEmails_UnLoad.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	F.Intrinsic.Control.If(V.DataTable.Proj.Exists)
+		F.Data.DataTable.Close("Issue")
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.End
+
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.CAR/ECRIssEmails_UnLoad.End
+
+Program.Sub.cmdSave_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	F.Data.DataTable.SaveToDB("Issue","con","GCG_5398_CCA_COM_ISS","Issue_No",256,"Issue_No@!@Issue_No*!*ISS_EMAIL@!@ISS_EMAIL*!*Sender_Email@!@Sender_Email")
+	F.Data.DataTable.AcceptChanges("Issue")
+	
+	F.ODBC.Connection!Con.Close
+	
+	Gui.CAR/ECRIssEmails.cmdSave.Enabled(False)
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.GsGridControlIssEmails_CellValueChanged.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+
+	Gui.CAR/ECRIssEmails.cmdSave.Enabled(True)
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.GsGridControlIssEmails_CellValueChanged.End
+
+Program.Sub.Send_ISS_EMAIL.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.i.Declare(Long,0)
+	V.Local.sSql.Declare(String,"")
+	V.Local.sEmail.Declare(String,"")
+	V.Local.iID.Declare(Long,0)
+	V.Local.sCompanyName.Declare(String,"")
+	V.Local.iNum.Declare(Long,0)
+	V.Local.sTemp.Declare(String,"")
+	V.Local.sUser.Declare(String,"")
+	
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	F.Intrinsic.String.Split(V.Passed.ECR_CCA,":",V.Local.sTemp)
+	V.Local.iNum.Set(V.Local.sTemp(1).Long)
+	
+	F.Intrinsic.Control.If(V.Local.sTemp(0).Trim,=,"CAPA")
+		F.Intrinsic.String.Build("Select ISSUE From GCG_5398_CAR Where CCA_NO = '{0}'",V.Local.iNum,V.Local.sSql)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("Select ISSUE From GCG_5398_ECR Where ECR = '{0}'",V.Local.iNum,V.Local.sSql)
+	F.Intrinsic.Control.EndIf
+	
+	F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sTemp)
+	
+	F.Intrinsic.Control.If(V.Passed.Type.UCase,=,"SIGNOFF")
+		V.Global.sSubject.Set(V.Passed.ECR_CCA.Trim)
+		F.Intrinsic.String.Build("Signoff needed for {0}",V.Passed.ECR_CCA.Trim,V.Local.sTemp,V.Global.sBody)
+		F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}'",V.Passed.Group.Trim,V.Local.sSql)
+		F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sUser)
+		F.Intrinsic.String.Split(V.Local.sUser,"#$#",V.Local.sUser)
+		F.Intrinsic.Control.If(V.Local.sUser.Trim,<>,"")
+			F.Intrinsic.String.Build("Select Top 1 ISS_EMAIL, Sender_Email From GCG_5398_CCA_COM_ISS Where COMMON_ISSUE = '{0}'",V.Local.sTemp,V.Local.sSql)
+			F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sEmail)
+			V.Local.sEmail.RedimPreserve(0,1)
+			F.Intrinsic.Control.If(V.Local.sEmail(1).Trim,=,"")
+				F.Intrinsic.String.Replace(V.Ambient.CompanyName," ","",V.Local.sCompanyName)
+				F.Intrinsic.String.Build("NoReply@{0}.com",V.Local.sCompanyName,V.Local.sEmail(1))
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.For(V.Local.i,0,V.Local.sUser.UBound,1)
+				F.Global.Security.GetUserEmail(V.Local.sUser(V.Local.i),V.Caller.CompanyCode,V.Local.sEmail)
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Global.sSubject.Trim,V.Local.sEmail(1),V.Local.sEmail(0).Trim,V.Global.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			F.Intrinsic.Control.Next(V.Local.i)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("Select Top 1 ISS_EMAIL, Sender_Email From GCG_5398_CCA_COM_ISS Where COMMON_ISSUE = '{0}'",V.Local.sTemp,V.Local.sSql)
+		F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sEmail)
+		F.Intrinsic.Control.If(V.Local.sEmail.Length,>,0)
+			F.Intrinsic.String.Split(V.Local.sEmail,"*!*",V.Local.sEmail)
+			V.Local.sEmail.RedimPreserve(0,1)
+			F.Intrinsic.Control.If(V.Local.sEmail(0).Trim,<>,"")
+				F.Intrinsic.String.Replace(V.Local.sEmail(0),";",",",V.Local.sEmail(0))
+				F.Intrinsic.Control.If(V.Local.sEmail(1).Trim,=,"")
+					F.Intrinsic.String.Replace(V.Ambient.CompanyName," ","",V.Local.sCompanyName)
+					F.Intrinsic.String.Build("NoReply@{0}.com",V.Local.sCompanyName,V.Local.sEmail(1))
+				F.Intrinsic.Control.EndIf
+				
+				F.Intrinsic.Control.If(V.Passed.Type.UCase,=,"NEW")
+					F.Intrinsic.String.Build("{0} as been created for Process: {1}",V.Passed.ECR_CCA.Trim,V.Local.sTemp,V.Global.sBody)
+				F.Intrinsic.Control.Else
+					F.Intrinsic.Control.If(V.Passed.Type.UCase,=,"UPDATE")
+						F.Intrinsic.String.Build("{0} as been updated for Process: {1}",V.Passed.ECR_CCA.Trim,V.Local.sTemp,V.Global.sBody)
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.EndIf
+				
+				V.Global.sSubject.Set(V.Passed.ECR_CCA.Trim)
+				
+				Gui.FormEmail.txtBody.Text(V.Global.sBody)
+				Gui.FormEmail.txtSubject.Text(V.Global.sSubject)
+				
+				Gui.FormEmail..Show
+				Gui.FormEmail..WaitForDismiss
+				
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Global.sSubject.Trim,V.Local.sEmail(1).Trim,V.Local.sEmail(0).Trim,V.Global.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Send_ISS_EMAIL.End
+
+Program.Sub.FormEmail_UnLoad.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	
+	Gui.FormEmail..Visible(False)
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.FormEmail_UnLoad.End
+
+Program.Sub.cmdUpdateEmail_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSubject.Declare(String,"")
+	V.Local.sBody.Declare(String,"")
+	
+	V.Local.sSubject.Set(V.Screen.FormEmail!txtSubject.Text)
+	V.Local.sBody.Set(V.Screen.FormEmail!txtBody.Text)
+	
+	V.Global.sSubject.Set(V.Local.sSubject.Trim)
+	V.Global.sBody.Set(V.Local.sBody.Trim)
+	
+	F.Intrinsic.Control.CallSub(FormEmail_UnLoad)
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.cmdUpdateEmail_Click.End
+
+Program.Sub.Send_Past_Due_Email.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String,"")
+	V.Local.sSql.Declare(String,"")
+	V.Local.i.Declare(Long,0)
+	V.Local.sRecipient.Declare(String,"")
+	V.Local.iID.Declare(Long,0)
+	V.Local.sSubject.Declare(String,"")
+	V.Local.sBody.Declare(String,"")
+	V.Local.sSender.Declare(String,"")
+	V.Local.sTemp.Declare(String,"")
+	V.Local.iSize.Declare(Long,0)
+	V.Local.iC.Declare(Long,0)
+	V.Local.sUser.Declare(String,"")
+	
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	
+	'getting list of past due CAPAs
+	F.Intrinsic.String.Build("Select CCA_NO, Issue From GCG_5398_CAR Where Due_Date < '{0}' and Status <> 'Complete - Awaiting Signoff'",V.Ambient.Date.PervasiveDate,V.Local.sSql)
+	
+	F.Data.DataTable.CreateFromSQL("CAPA","con",V.Local.sSql,True)
+	
+	F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.CAPA.RowCount--,1)
+		F.Intrinsic.String.Build("CAPA: {0} is past due.",V.DataTable.CAPA(V.Local.i).CCA_NO!FieldVal,V.Local.sSubject)
+		F.Intrinsic.String.Build("CAPA: {0} is past due.  Go to Quality System > Transactions > CAPA/ECR Workflow Dashboard (5398) to see the current status.",V.DataTable.CAPA(V.Local.i).CCA_NO!FieldVal,V.Local.sBody)
+		F.Intrinsic.String.Build("Select Top 1 ISS_EMAIL, Sender_Email From GCG_5398_CCA_COM_ISS Where COMMON_ISSUE = '{0}'",V.DataTable.CAPA(V.Local.i).Issue!Fieldvaltrim,V.Local.sSql)
+		F.Data.DataTable.CreateFromSQL("Email","con",V.Local.sSql,True)
+		F.Intrinsic.Control.If(V.DataTable.Email.RowCount--,<>,-1)
+			F.Intrinsic.Control.If(V.DataTable.Email(V.DataTable.Email.RowCount--).Sender_Email!FieldValTrim,=,"")
+				F.Intrinsic.String.Replace(V.Ambient.CompanyName," ","",V.Local.sSender)
+				F.Intrinsic.String.Build("NoReply@{0}.com",V.Local.sSender,V.Local.sSender)
+			F.Intrinsic.Control.Else
+				V.Local.sSender.Set(V.DataTable.Email(V.DataTable.Email.RowCount--).Sender_Email!FieldValTrim)
+			F.Intrinsic.Control.EndIf
+			
+			V.Local.sRecipient.Set(V.DataTable.Email(V.DataTable.Email.RowCount--).ISS_Email!FieldValTrim)
+			F.Intrinsic.String.Replace(V.Local.sRecipient,";",",",V.Local.sRecipient)
+			F.Intrinsic.Control.If(V.Local.sRecipient.Length,>,100)
+				F.Intrinsic.String.Split(V.Local.sRecipient,",",V.Local.sTemp)
+				V.Local.sRecipient.Redim(0,0)
+				F.Intrinsic.Control.For(V.Local.iC,0,V.Local.sTemp.UBound,1)
+					F.Intrinsic.Control.If(V.Local.sRecipient(V.Local.iSize).Trim,=,"")
+						V.Local.sRecipient.Set(V.Local.sTemp(V.Local.iC))
+					F.Intrinsic.Control.Else
+						F.Intrinsic.String.Build("{0},{1}",V.Local.sRecipient(V.Local.iSize),V.Local.sTemp(V.Local.iC),V.Local.sTemp(0))
+						F.Intrinsic.Control.If(V.Local.sTemp(0).Length,<=,100)
+							V.Local.sRecipient(V.Local.iSize).Set(V.Local.sTemp(0))
+						F.Intrinsic.Control.Else
+							F.Intrinsic.Math.Add(V.Local.iSize,1,V.Local.iSize)
+							V.Local.sRecipient.RedimPreserve(0,V.Local.iSize)
+							V.Local.sRecipient(V.Local.iSize).Set(V.Local.sTemp(V.Local.iC))
+						F.Intrinsic.Control.EndIf
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.Next(V.Local.iC)
+				
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.For(v.Local.iC,0,v.Local.sRecipient.UBound,1)
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Local.sSubject.Trim,V.Local.sSender,V.Local.sRecipient(v.Local.iC),V.Local.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			f.Intrinsic.Control.Next(v.Local.iC)
+		F.Intrinsic.Control.EndIf
+		F.Data.DataTable.Close("Email")
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	F.Data.DataTable.Close("CAPA")
+	
+	'getting list of past due ECRs
+	F.Intrinsic.String.Build("Select ECR, Issue From GCG_5398_ECR Where Due_Date < '{0}' and Status <> 'Complete - Awaiting Signoff'",V.Ambient.Date.PervasiveDate,V.Local.sSql)
+	
+	F.Data.DataTable.CreateFromSQL("ECR","con",V.Local.sSql,True)
+	
+	F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.ECR.RowCount--,1)
+		F.Intrinsic.String.Build("ECR: {0} is past due.",V.DataTable.ECR(V.Local.i).ECR!FieldVal,V.Local.sSubject)
+		F.Intrinsic.String.Build("ECR: {0} is past due.  Go to Quality System > Transactions > CAPA/ECR Workflow Dashboard (5398) to see the current status.",V.DataTable.ECR(V.Local.i).ECR!FieldVal,V.Local.sBody)
+		F.Intrinsic.String.Build("Select Top 1 ISS_EMAIL, Sender_Email From GCG_5398_CCA_COM_ISS Where COMMON_ISSUE = '{0}'",V.DataTable.ECR(V.Local.i).Issue!Fieldvaltrim,V.Local.sSql)
+		F.Data.DataTable.CreateFromSQL("Email","con",V.Local.sSql,True)
+		F.Intrinsic.Control.If(V.DataTable.Email.RowCount--,<>,-1)
+			F.Intrinsic.Control.If(V.DataTable.Email(V.DataTable.Email.RowCount--).Sender_Email!FieldValTrim,=,"")
+				F.Intrinsic.String.Replace(V.Ambient.CompanyName," ","",V.Local.sSender)
+				F.Intrinsic.String.Build("NoReply@{0}.com",V.Local.sSender,V.Local.sSender)
+			F.Intrinsic.Control.Else
+				V.Local.sSender.Set(V.DataTable.Email(V.DataTable.Email.RowCount--).Sender_Email!FieldValTrim)
+			F.Intrinsic.Control.EndIf
+			
+			V.Local.sRecipient.Set(V.DataTable.Email(V.DataTable.Email.RowCount--).ISS_Email!FieldValTrim)
+			F.Intrinsic.String.Replace(V.Local.sRecipient,";",",",V.Local.sRecipient)
+			F.Intrinsic.Control.If(V.Local.sRecipient.Length,>,100)
+				F.Intrinsic.String.Split(V.Local.sRecipient,",",V.Local.sTemp)
+				V.Local.sRecipient.Redim(0,0)
+				F.Intrinsic.Control.For(V.Local.iC,0,V.Local.sTemp.UBound,1)
+					F.Intrinsic.Control.If(V.Local.sRecipient(V.Local.iSize).Trim,=,"")
+						V.Local.sRecipient.Set(V.Local.sTemp(V.Local.iC))
+					F.Intrinsic.Control.Else
+						F.Intrinsic.String.Build("{0},{1}",V.Local.sRecipient(V.Local.iSize),V.Local.sTemp(V.Local.iC),V.Local.sTemp(0))
+						F.Intrinsic.Control.If(V.Local.sTemp(0).Length,<=,100)
+							V.Local.sRecipient(V.Local.iSize).Set(V.Local.sTemp(0))
+						F.Intrinsic.Control.Else
+							F.Intrinsic.Math.Add(V.Local.iSize,1,V.Local.iSize)
+							V.Local.sRecipient.RedimPreserve(0,V.Local.iSize)
+							V.Local.sRecipient(V.Local.iSize).Set(V.Local.sTemp(V.Local.iC))
+						F.Intrinsic.Control.EndIf
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.Next(V.Local.iC)
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.For(v.Local.iC,0,v.Local.sRecipient.UBound,1)
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Local.sSubject.Trim,V.Local.sSender,V.Local.sRecipient(v.Local.iC),V.Local.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			f.Intrinsic.Control.Next(v.Local.iC)
+		F.Intrinsic.Control.EndIf
+		F.Data.DataTable.Close("Email")
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	F.Data.DataTable.Close("ECR")
+	
+	F.Intrinsic.Control.If(V.Local.sSender.Trim,=,"")
+		F.Intrinsic.String.Replace(V.Ambient.CompanyName," ","",V.Local.sSender)
+		F.Intrinsic.String.Build("NoReply@{0}.com",V.Local.sSender,V.Local.sSender)
+	F.Intrinsic.Control.EndIf
+	
+	'getting list of past due CAPAs
+	F.Intrinsic.String.Build("Select CCA_NO, Add_Group_1, Group_1_Signoff, Add_Group_2, Group_2_Signoff From GCG_5398_CAR Where Due_Date < '{0}' and QA_Signoff = 0",V.Ambient.Date.PervasiveDate,V.Local.sSql)
+	
+	F.Data.DataTable.CreateFromSQL("CAPA","con",V.Local.sSql,True)
+	
+	F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.CAPA.RowCount--,1)
+		F.Intrinsic.String.Build("CAPA: {0} is past due.",V.DataTable.CAPA(V.Local.i).CCA_NO!FieldVal,V.Local.sSubject)
+		F.Intrinsic.String.Build("CAPA: {0} is past due.  Go to Quality System > Transactions > CAPA/ECR Workflow Dashboard (5398) to see the current status.",V.DataTable.CAPA(V.Local.i).CCA_NO!FieldVal,V.Local.sBody)
+
+		F.Intrinsic.Control.If(V.DataTable.CAPA(V.Local.i).Group_1_Signoff!FieldVal,=,False)
+			F.Intrinsic.Control.If(V.DataTable.CAPA(V.Local.i).Group_2_Signoff!FieldVal,=,False)
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = '{1}' or Eng_Group = 'QLTY'",V.DataTable.CAPA(V.Local.i).Add_Group_1!FieldValTrim,V.DataTable.CAPA(V.Local.i).Add_Group_2!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.Else
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = 'QLTY'",V.DataTable.CAPA(V.Local.i).Add_Group_1!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.If(V.DataTable.CAPA(V.Local.i).Group_2_Signoff!FieldVal,=,False)
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = 'QLTY'",V.DataTable.CAPA(V.Local.i).Add_Group_2!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.Else
+				V.Local.sSql.Set("Select User_ID From V_ENG_GROUP Where Eng_Group = 'QLTY'")
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		
+		F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sUser)
+		F.Intrinsic.String.Split(V.Local.sUser,"#$#",V.Local.sUser)
+		F.Intrinsic.Control.If(V.Local.sUser.Trim,<>,"")
+			F.Intrinsic.Control.For(V.Local.iC,0,V.Local.sUser.UBound,1)
+				F.Global.Security.GetUserEmail(V.Local.sUser(V.Local.iC),V.Caller.CompanyCode,V.Local.sRecipient)
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Local.sSubject.Trim,V.Local.sSender,V.Local.sRecipient,V.Local.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			F.Intrinsic.Control.Next(V.Local.iC)
+		F.Intrinsic.Control.EndIf
+		
+		F.Intrinsic.Control.If(V.DataTable.Email.Exists)
+			F.Data.DataTable.Close("Email")
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	F.Data.DataTable.Close("CAPA")
+	
+	'getting list of past due ECRs
+	F.Intrinsic.String.Build("Select ECR, Issue From GCG_5398_ECR Where Due_Date < '{0}' and QA_Signoff = 0",V.Ambient.Date.PervasiveDate,V.Local.sSql)
+	
+	F.Data.DataTable.CreateFromSQL("ECR","con",V.Local.sSql,True)
+	
+	F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.ECR.RowCount--,1)
+		F.Intrinsic.String.Build("ECR: {0} is past due.",V.DataTable.ECR(V.Local.i).ECR!FieldVal,V.Local.sSubject)
+		F.Intrinsic.String.Build("ECR: {0} is past due.  Go to Quality System > Transactions > CAPA/ECR Workflow Dashboard (5398) to see the current status.",V.DataTable.ECR(V.Local.i).ECR!FieldVal,V.Local.sBody)
+
+		F.Intrinsic.Control.If(V.DataTable.ECR(V.Local.i).Group_1_Signoff!FieldVal,=,False)
+			F.Intrinsic.Control.If(V.DataTable.ECR(V.Local.i).Group_2_Signoff!FieldVal,=,False)
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = '{1}' or Eng_Group = 'QLTY'",V.DataTable.ECR(V.Local.i).Add_Group_1!FieldValTrim,V.DataTable.ECR(V.Local.i).Add_Group_2!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.Else
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = 'QLTY'",V.DataTable.ECR(V.Local.i).Add_Group_1!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.If(V.DataTable.ECR(V.Local.i).Group_2_Signoff!FieldVal,=,False)
+				F.Intrinsic.String.Build("Select User_ID From V_ENG_GROUP Where Eng_Group = '{0}' or Eng_Group = 'QLTY'",V.DataTable.ECR(V.Local.i).Add_Group_2!FieldValTrim,V.Local.sSql)
+			F.Intrinsic.Control.Else
+				V.Local.sSql.Set("Select User_ID From V_ENG_GROUP Where Eng_Group = 'QLTY'")
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		
+		F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSql,V.Local.sUser)
+		F.Intrinsic.String.Split(V.Local.sUser,"#$#",V.Local.sUser)
+		F.Intrinsic.Control.If(V.Local.sUser.Trim,<>,"")
+			F.Intrinsic.Control.For(V.Local.iC,0,V.Local.sUser.UBound,1)
+				F.Global.Security.GetUserEmail(V.Local.sUser(V.Local.iC),V.Caller.CompanyCode,V.Local.sRecipient)
+				F.Global.Messaging.QueueMessage(V.Caller.CompanyCode,v.Local.iID,V.Caller.Caller,V.Local.sSubject.Trim,V.Local.sSender,V.Local.sRecipient,V.Local.sBody.Trim,-1,"",False,"","","","","","","","",True)
+			F.Intrinsic.Control.Next(V.Local.iC)
+		F.Intrinsic.Control.EndIf
+		
+		F.Intrinsic.Control.If(V.DataTable.Email.Exists)
+			F.Data.DataTable.Close("Email")
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	F.Data.DataTable.Close("ECR")
+	
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","GCG_5398_ISSUE_EMAIL.g2u",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End
+
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+Program.Sub.Send_Past_Due_Email.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+${$5$}$2.0.0.0$}$2
+${$6$}$cmarrujo$}$20240206101902283$}$yxxTc4J0hhG8pMUhFx4xl/gNGjcI+JM63KW/msl9EpJUZ8mr+Tw28DkH+EpIf9QROoe1uKByHpmsR0Zk+XqH7w==
+Program.Sub.Comments.End
